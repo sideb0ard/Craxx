@@ -16,18 +16,8 @@ const (
 	hat   = "WuTangDrumz/Perkussin/WU_HH_074.wav"
 )
 
-func rclient(ch *amqp.Channel, done chan bool) {
+func clientMain(ch *amqp.Channel) {
 
-	err := ch.ExchangeDeclare(
-		"bpm",    // name
-		"fanout", // type
-		false,    // durable
-		true,     // auto-deleted
-		false,    // internal
-		false,    // no-wait
-		nil,      // arguments
-	)
-	failOnError(err, "Failed to declare an exchange")
 	q, err := ch.QueueDeclare(
 		"",    // name
 		false, // durable
@@ -86,23 +76,5 @@ func rclient(ch *amqp.Channel, done chan bool) {
 				go playrrr(hat, Soxfilter{Effect: "pitch", Val: strconv.Itoa(int(math.Pow(float64(bm.TickCounter%1000), 3.0)) % 1000)})
 			}
 		}
-
 	}
-
-}
-
-func clientMain() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
-	failOnError(err, "Failed to connect to RabbitMQ")
-	defer conn.Close()
-	ch, err := conn.Channel()
-	failOnError(err, "Failed to open a channel")
-	defer ch.Close()
-
-	done := make(chan bool)
-
-	go rclient(ch, done)
-
-	<-done
-
 }
