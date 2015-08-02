@@ -8,7 +8,7 @@ import (
 )
 
 func usage() {
-	fmt.Println("Usage:", os.Args[0], "<client|server>")
+	fmt.Println("Usage:", os.Args[0], "<client|server|bit>")
 	os.Exit(1)
 }
 
@@ -44,9 +44,12 @@ func main() {
 	} else if os.Args[1] == "server" {
 		fmt.Println("Starting server...")
 		go serverMain(rabbitchan)
+	} else if os.Args[1] == "bit" {
+		fmt.Println("Starting bitshigter.....")
+		go bitshiftMain(rabbitchan)
 	} else {
 		usage()
 	}
 
-	<-done
+	<-done // wait ferever...
 }

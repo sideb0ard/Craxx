@@ -8,7 +8,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-var bpm = 90
+var bpm = 85
 
 type BpmMsg struct {
 	Bpm         int
