@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"math"
 
 	"code.google.com/p/portaudio-go/portaudio"
@@ -9,6 +11,7 @@ import (
 )
 
 var t int32 = 55000000
+var playOn = false
 
 const sampleRate = 44100
 
@@ -51,12 +54,21 @@ func bitshiftMain(ch *amqp.Channel) {
 	chk(s.Start())
 	defer s.Stop()
 
-	for _ = range msgs {
-		t *= 100
-		// err := json.Unmarshal(d.Body, &bm)
-		// if err != nil {
-		// 	fmt.Println("blah", err)
-		// }
+	for m := range msgs {
+		var bm BpmMsg
+		err := json.Unmarshal(m.Body, &bm)
+		if err != nil {
+			fmt.Println("blah", err)
+		}
+		if bm.TickCounter%8 == 1 && playOn == false {
+			s.Start()
+			playOn = true
+		} else if bm.TickCounter%8 == 0 {
+			s.Stop()
+			playOn = false
+		}
+
+		t += 100000
 	}
 }
 
@@ -75,16 +87,17 @@ func newStereoSine(freqL, freqR, sampleRate float64) *stereoSine {
 }
 
 func (g *stereoSine) processAudio(out [][]float32) {
+	localt := t
 	for i := range out[0] {
 		//fmt.Println("processss... %d", t)
-		inum := t * ((t>>uint(9) | t>>uint(13)) & 25 & (t >> uint(6)))
+		inum := localt * ((localt>>uint(9) | localt>>uint(13)) & 25 & (localt >> uint(6)))
 		num := scalr(inum)
 		out[0][i] = num
 		_, g.phaseL = math.Modf(g.phaseL + g.stepL)
 		// out[1][i] = float32(math.Sin(2 * math.Pi * g.phaseR))
 		out[1][i] = num
 		_, g.phaseR = math.Modf(g.phaseR + g.stepR)
-		t++
+		localt++
 	}
 }
 
