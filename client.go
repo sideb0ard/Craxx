@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
-	"math/rand"
 	"strconv"
 
 	"github.com/streadway/amqp"
@@ -53,29 +52,29 @@ func clientMain(ch *amqp.Channel) {
 		if err != nil {
 			fmt.Println("blah", err)
 		}
-		// if bm.TickCounter%3 == 0 {
-		// 	fmt.Println("KICK Got one Modulo 4!", bm.TickCounter)
-		// 	//go playrrr(kick, Soxfilter{})
-		// 	if rand.Intn(10) > 2 {
-		// 		go playrrr(kick, Soxfilter{Effect: "pitch", Val: strconv.Itoa(int(math.Pow(float64(bm.TickCounter%1000), 3.0)) % 1000)})
-		// 	} else {
-		// 		fmt.Println("RANDY MISSS!")
-		// 	}
-		// }
-		// if bm.TickCounter%4 == 0 {
-		// 	fmt.Println("SNARE Got one Modulo 3!", bm.TickCounter)
-		// 	//go playrrr(snare, Soxfilter{})
-		// 	if rand.Intn(10) > 1 {
-		// 		//go playrrr(snare, Soxfilter{Effect: "pitch", Val: strconv.Itoa(int(math.Pow(float64(bm.TickCounter%1000), 3.0)) % 1000)})
-		// 		go playrrr(snare, Soxfilter{})
-		// 	}
-		// }
-		if bm.TickCounter%2 == 0 {
-			fmt.Println("HAT Got one Modulo 1!", bm.TickCounter)
-			// go playrrr(hat + " pitch " + strconv.Itoa(bm.TickCounter%1000))
-			if rand.Intn(10) > 4 {
-				go playrrr(hat, Soxfilter{Effect: "pitch", Val: strconv.Itoa(int(math.Pow(float64(bm.TickCounter%1000), 3.0)) % 1000)})
-			}
+		if bm.TickCounter%4 == 1 {
+			fmt.Println("KICK Got one Modulo 4!", bm.TickCounter)
+			//go playrrr(kick, Soxfilter{})
+			//if rand.Intn(10) > 2 {
+			go playrrr(kick, Soxfilter{Effect: "pitch", Val: strconv.Itoa(int(math.Pow(float64(bm.TickCounter%1000), 3.0)) % 1000)})
+			//} else {
+			//	fmt.Println("RANDY MISSS!")
+			//}
 		}
+		//if bm.TickCounter%4 == 0 {
+		//	fmt.Println("SNARE Got one Modulo 3!", bm.TickCounter)
+		//	//go playrrr(snare, Soxfilter{})
+		//	if rand.Intn(10) > 1 {
+		//		//go playrrr(snare, Soxfilter{Effect: "pitch", Val: strconv.Itoa(int(math.Pow(float64(bm.TickCounter%1000), 3.0)) % 1000)})
+		//		go playrrr(snare, Soxfilter{})
+		//	}
+		//}
+		//if bm.TickCounter%2 == 0 {
+		//	fmt.Println("HAT Got one Modulo 1!", bm.TickCounter)
+		//	// go playrrr(hat + " pitch " + strconv.Itoa(bm.TickCounter%1000))
+		//	if rand.Intn(10) > 4 {
+		//		go playrrr(hat, Soxfilter{Effect: "pitch", Val: strconv.Itoa(int(math.Pow(float64(bm.TickCounter%1000), 3.0)) % 1000)})
+		//	}
+		//}
 	}
 }

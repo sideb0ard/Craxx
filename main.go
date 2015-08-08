@@ -44,9 +44,9 @@ func main() {
 	} else if os.Args[1] == "server" {
 		fmt.Println("Starting server...")
 		go serverMain(rabbitchan)
-	} else if os.Args[1] == "bit" {
+	} else if os.Args[1] == "sine" {
 		fmt.Println("Starting bitshigter.....")
-		go bitshiftMain(rabbitchan)
+		go sineMain(rabbitchan)
 	} else {
 		usage()
 	}
