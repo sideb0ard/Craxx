@@ -50,7 +50,7 @@ func sineMain(ch *amqp.Channel) {
 	portaudio.Initialize()
 	defer portaudio.Terminate()
 	//s := newStereoSine(256, 320, sampleRate)
-	s := newStereoSine(255, 255, sampleRate)
+	s := newStereoSine(220, 220, sampleRate)
 	defer s.Close()
 	chk(s.Start())
 	defer s.Stop()
@@ -68,11 +68,11 @@ func sineMain(ch *amqp.Channel) {
 func (g *stereoSine) processAudio(out [][]float32) {
 	var t float64 = 0
 	for i := range out[0] {
-		//out[0][i] = float32(math.Sin(2 * math.Pi * g.phaseL * (t / float64(bpm))))
-		out[0][i] = float32(math.Sin(2 * math.Pi * float64(tcp%400) * (t / float64(bpm))))
+		out[0][i] = float32(math.Sin(2*math.Pi*g.phaseL*(t/float64(bpm)))) / 2
+		//out[0][i] = float32(math.Sin(2 * math.Pi * float64(tcp%400) * (t / float64(bpm))))
 		_, g.phaseL = math.Modf(g.phaseL + g.stepL)
-		//out[1][i] = float32(math.Sin(2 * math.Pi * g.phaseR * (t / float64(bpm))))
-		out[1][i] = float32(math.Sin(2 * math.Pi * float64(tcp%400) * (t / float64(bpm))))
+		out[1][i] = float32(math.Sin(2*math.Pi*g.phaseR*(t/float64(bpm)))) / 2
+		//out[1][i] = float32(math.Sin(2 * math.Pi * float64(tcp%400) * (t / float64(bpm))))
 		_, g.phaseR = math.Modf(g.phaseR + g.stepR)
 		t++
 	}
@@ -94,7 +94,7 @@ func sniffy() {
 			// fmt.Println("TCP!", LayerCount["TCP"])
 			// fmt.Println("UDP!", LayerCount["UDP"])
 			tcp = LayerCount["TCP"]
-			udp = LayerCount["UCP"]
+			udp = LayerCount["UDP"]
 		}
 	}
 }

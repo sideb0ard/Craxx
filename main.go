@@ -27,16 +27,19 @@ func main() {
 	failOnError(err, "Failed to open a channel")
 	defer rabbitchan.Close()
 
-	err = rabbitchan.ExchangeDeclare(
-		"bpm",    // name
-		"fanout", // type
-		false,    // durable
-		true,     // auto-deleted
-		false,    // internal
-		false,    // no-wait
-		nil,      // arguments
-	)
-	failOnError(err, "Failed to declare an exchange")
+	exchanges := []string{"bpm", "updateMsgs"}
+	for _, x := range exchanges {
+		err = rabbitchan.ExchangeDeclare(
+			x,        // name
+			"fanout", // type
+			false,    // durable
+			true,     // auto-deleted
+			false,    // internal
+			false,    // no-wait
+			nil,      // arguments
+		)
+		failOnError(err, "Failed to declare exchange")
+	}
 
 	if os.Args[1] == "client" {
 		fmt.Println("Starting client...")
@@ -45,8 +48,11 @@ func main() {
 		fmt.Println("Starting server...")
 		go serverMain(rabbitchan)
 	} else if os.Args[1] == "sine" {
-		fmt.Println("Starting bitshigter.....")
+		fmt.Println("Starting sine.....")
 		go sineMain(rabbitchan)
+	} else if os.Args[1] == "cmd" {
+		fmt.Println("Starting cmd.....")
+		go cmdMain(rabbitchan)
 	} else {
 		usage()
 	}

@@ -52,7 +52,9 @@ func clientMain(ch *amqp.Channel) {
 		if err != nil {
 			fmt.Println("blah", err)
 		}
-		if bm.TickCounter%4 == 1 {
+		fmt.Println(bm)
+		// if bm.TickCounter%4 == 1 {
+		if bm.MicroTick == 1 {
 			fmt.Println("KICK Got one Modulo 4!", bm.TickCounter)
 			//go playrrr(kick, Soxfilter{})
 			//if rand.Intn(10) > 2 {
